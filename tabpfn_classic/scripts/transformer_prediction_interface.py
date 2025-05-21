@@ -645,6 +645,7 @@ def transformer_predict(
                     style_,
                     softmax_temperature_,
                     True,
+                    use_reentrant=False,
                 )
             else:
                 with torch.cuda.amp.autocast(enabled=fp16_inference):
@@ -655,6 +656,7 @@ def transformer_predict(
                         style_,
                         softmax_temperature_,
                         True,
+                        use_reentrant=False,
                     )
         outputs += [output_batch]
 

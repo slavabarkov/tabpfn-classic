@@ -175,6 +175,7 @@ class TransformerEncoderLayer(Module):
                     src_key_padding_mask,
                     True,
                     src_mask,
+                    use_reentrant=False,
                 )[0]
             else:
                 src2 = self.self_attn(
