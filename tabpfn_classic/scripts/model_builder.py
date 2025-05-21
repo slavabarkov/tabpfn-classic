@@ -1,3 +1,4 @@
+import json
 import os
 from functools import partial
 
@@ -7,15 +8,22 @@ from .. import encoders
 from ..transformer import TransformerModel
 
 
-def load_model_only_inference(path, filename, device):
+def load_model_only_inference(path, ckpt_path_weights, ckpt_path_config, device):
     """
     Loads a saved model from the specified position. This function only restores inference capabilities and
     cannot be used for further training.
     """
 
-    model_state, optimizer_state, config_sample = torch.load(
-        os.path.join(path, filename), map_location="cpu"
+    # Load the model state
+    model_state = torch.load(
+        os.path.join(path, ckpt_path_weights),
+        map_location="cpu",
+        weights_only=True,
     )
+
+    # Load the config
+    with open(os.path.join(path, ckpt_path_config), "r") as f:
+        config_sample = json.load(f)
 
     if (
         (

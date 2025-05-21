@@ -76,24 +76,37 @@ def load_model_workflow(
         """
         Return the default checkpoint path. If it is not present, download it.
         """
-        # Default checkpoint name
-        file_name = f"weights/tabpfn_checkpoint_ddf5e85.pt"
+        # Default checkpoint weights filename
+        file_name_weights = f"weights/tabpfn_checkpoint_weights_ddf5e85.pt"
         if base_path is None:
             base_path = _default_base_path()
-        ckpt_path = Path(base_path) / file_name
+        ckpt_path_weights = Path(base_path) / file_name_weights
 
-        if not ckpt_path.is_file():
+        if not ckpt_path_weights.is_file():
             # fall back to downloading the default checkpoint from Github Releases
             DEFAULT_CKPT_URL = (
                 "https://github.com/slavabarkov/tabpfn-classic/releases/"
-                "download/v0.0.1-assets/tabpfn_checkpoint_ddf5e85.pt"
+                "download/v0.0.1-assets/tabpfn_checkpoint_weights_ddf5e85.pt"
             )
-            _download_checkpoint(DEFAULT_CKPT_URL, ckpt_path)
+            _download_checkpoint(DEFAULT_CKPT_URL, ckpt_path_weights)
 
-        return ckpt_path
+        # Default checkpoint config filename
+        file_name_config = f"weights/tabpfn_checkpoint_config_ddf5e85.json"
+        ckpt_path_config = Path(base_path) / file_name_config
+        if not ckpt_path_config.is_file():
+            # fall back to downloading the default checkpoint from Github Releases
+            DEFAULT_CKPT_URL = (
+                "https://github.com/slavabarkov/tabpfn-classic/releases/"
+                "download/v0.0.1-assets/tabpfn_checkpoint_config_ddf5e85.json"
+            )
+            _download_checkpoint(DEFAULT_CKPT_URL, ckpt_path_config)
 
-    model_file = _default_checkpoint()
-    model, config = load_model_only_inference(base_path, model_file, device)
+        return ckpt_path_weights, ckpt_path_config
+
+    ckpt_path_weights, ckpt_path_config = _default_checkpoint()
+    model, config = load_model_only_inference(
+        base_path, ckpt_path_weights, ckpt_path_config, device
+    )
     return model, config
 
 
